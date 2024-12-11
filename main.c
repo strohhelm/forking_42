@@ -106,7 +106,7 @@ u8 *find_header(i8 *start, struct bmp_header *header)
 // 	p[2] = 255;
 // }
 
-char *extract_string(struct file_content* content, struct bmp_header *header)
+void extract_string(struct file_content* content, struct bmp_header *header)
 {
 	u8 *current;
 	current = find_header(&(content->data[header->data_offset]), header);
@@ -119,12 +119,12 @@ char *extract_string(struct file_content* content, struct bmp_header *header)
 	size_t len = (size_t)current[0] + (size_t)current[2];
 	// printf("length: %zu \n", len);
 
-	char *str = calloc(sizeof(char), len + 1);
-	if (!str)
-	{
-		PRINT_ERROR("Malloc failed!\n");
-		exit (1);
-	}
+	// char *str = calloc(sizeof(char), len + 1);
+	// if (!str)
+	// {
+	// 	PRINT_ERROR("Malloc failed!\n");
+	// 	exit (1);
+	// }
 	current -= 2 * header->width * 4 + 20;
 	// draw_pixel(current);
 	size_t strindex = 0;
@@ -134,13 +134,15 @@ char *extract_string(struct file_content* content, struct bmp_header *header)
 	{
 		if (len > 3)
 		{
-			memmove(&str[strindex], px, 3);
+			// memmove(&str[strindex], px, 3);
+			write(STDOUT_FILENO, px, 3);
 			strindex += 3;
 			len -= 3;
 		}
 		else
 		{
-			memmove(&str[strindex], px, len);
+			// memmove(&str[strindex], px, len);
+			write(STDOUT_FILENO, px, len);
 			strindex += len;
 			len = 0;
 		}
@@ -153,7 +155,7 @@ char *extract_string(struct file_content* content, struct bmp_header *header)
 		else
 			px++;
 	}
-	str[strindex] = '\0';
+	// str[strindex] = '\0';
 	//file error testing
 	// int fd = open("test.bmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
 	// printf("%d\n", fd);
@@ -164,7 +166,7 @@ char *extract_string(struct file_content* content, struct bmp_header *header)
 	// }
 	// else
 	// 	PRINT_ERROR("opend failed!");
-	return (str);
+	return ;
 }
 
 int main(int argc, char** argv)
@@ -183,9 +185,7 @@ int main(int argc, char** argv)
 	struct bmp_header* header = (struct bmp_header*) file_content.data;
 	// printf("signature: %.2s\nfile_size: %u\ndata_offset: %u\ninfo_header_size: %u\nwidth: %u\nheight: %u\nplanes: %i\nbit_per_px: %i\ncompression_type: %u\ncompression_size: %u\n", header->signature, header->file_size, header->data_offset, header->info_header_size, header->width, header->height, header->number_of_planes, header->bit_per_pixel, header->compression_type, header->compressed_image_size);
 
-	char *str = extract_string(&file_content, header);
-	write (1, str, strlen(str));
-	free(str);
+	extract_string(&file_content, header);
 	return 0;
 }
 
