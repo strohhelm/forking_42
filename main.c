@@ -185,6 +185,7 @@ int main(int argc, char** argv)
 
 	char *str = extract_string(&file_content, header);
 	write (1, str, strlen(str));
+	free(str);
 	return 0;
 }
 
