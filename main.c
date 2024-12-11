@@ -99,12 +99,6 @@ u8 *find_header(i8 *start, struct bmp_header *header)
 	}
 	return (NULL);
 }
-// void draw_pixel(u8 *p)
-// {
-// 	p[0] = 0;
-// 	p[1] = 0;
-// 	p[2] = 255;
-// }
 
 void extract_string(struct file_content* content, struct bmp_header *header)
 {
@@ -117,33 +111,19 @@ void extract_string(struct file_content* content, struct bmp_header *header)
 	}
 	current = current + 7 * header->width * 4 + 7 * 4;
 	size_t len = (size_t)current[0] + (size_t)current[2];
-	// printf("length: %zu \n", len);
-
-	// char *str = calloc(sizeof(char), len + 1);
-	// if (!str)
-	// {
-	// 	PRINT_ERROR("Malloc failed!\n");
-	// 	exit (1);
-	// }
 	current -= 2 * header->width * 4 + 20;
-	// draw_pixel(current);
-	size_t strindex = 0;
 	u32* px = (u32*)current;
 	size_t column = 0;
 	while (len > 0)
 	{
 		if (len > 3)
 		{
-			// memmove(&str[strindex], px, 3);
 			write(STDOUT_FILENO, px, 3);
-			strindex += 3;
 			len -= 3;
 		}
 		else
 		{
-			// memmove(&str[strindex], px, len);
 			write(STDOUT_FILENO, px, len);
-			strindex += len;
 			len = 0;
 		}
 		column++;
@@ -155,17 +135,7 @@ void extract_string(struct file_content* content, struct bmp_header *header)
 		else
 			px++;
 	}
-	// str[strindex] = '\0';
-	//file error testing
-	// int fd = open("test.bmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	// printf("%d\n", fd);
-	// if (fd > 0)
-	// {
-	// 	write (fd, content->data, content->size);
-	// 	close (fd);
-	// }
-	// else
-	// 	PRINT_ERROR("opend failed!");
+
 	return ;
 }
 
