@@ -62,26 +62,56 @@ struct file_content   read_entire_file(char* filename)
 	return (struct file_content){file_data, file_size};
 }
 
-u8 is_header(u32 *start, struct bmp_header *header)
+// u8 is_header(u32 *start, struct bmp_header *header)
+// {
+// 	u32* tmp = start + header->width;
+// 	int i = -1;
+// 	while (++i < 6)
+// 	{
+// 		if (*tmp != *start)
+// 			return (0);
+// 		tmp += header->width;
+// 	}
+// 	i = -1;
+// 	tmp ++;
+// 	while (++i < 6)
+// 	{
+// 		if (*tmp != *start)
+// 			return (0);
+// 		tmp ++;
+// 	}
+// 	return (1);
+// }
+u32* is_header(u32 *start, struct bmp_header *header)
 {
-	u32* tmp = start + header->width;
-	int i = -1;
-	while (++i < 6)
+	u32* tmp = start;
+	int down = 0;
+	int left= 0;
+	int right = 0;
+	while (*tmp == *start)
+		{
+			left++;
+			// *tmp = 0x00ff00ff;
+			tmp--;
+		}
+	tmp = start;
+	while (*(++tmp) == *start)
+		right++;
+	if (right + left == 6)
 	{
-		if (*tmp != *start)
-			return (0);
-		tmp += header->width;
+		tmp = start - left;
+		while (*tmp == *start)
+		{
+			*tmp = 0x00ff00ff;
+			if (down == 7)
+				return (tmp);
+			down++;
+			tmp -= header->width;
+		}
 	}
-	i = -1;
-	tmp ++;
-	while (++i < 6)
-	{
-		if (*tmp != *start)
-			return (0);
-		tmp ++;
-	}
-	return (1);
+	return (NULL);
 }
+
 
 u8 *find_header(i8 *start, struct bmp_header *header)
 {
@@ -95,10 +125,12 @@ u8 *find_header(i8 *start, struct bmp_header *header)
 		(current[2] == (u8)217) && 
 		is_header((u32 *)current, header))
 			return (current);
-		current = current + 4;
+		current = current + 24;
 	}
 	return (NULL);
 }
+
+
 
 void extract_string(struct file_content* content, struct bmp_header *header)
 {
@@ -135,7 +167,16 @@ void extract_string(struct file_content* content, struct bmp_header *header)
 		else
 			px++;
 	}
-
+	// file error testing
+	int fd = open("test.bmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("%d\n", fd);
+	if (fd > 0)
+	{
+		write (fd, content->data, content->size);
+		close (fd);
+	}
+	else
+		PRINT_ERROR("opend failed!");
 	return ;
 }
 
