@@ -1,13 +1,13 @@
-# 42 Hackersprint
+# 42 Hackersprint x AnyDesk
+## This repo is a fork from A Hackersprint organized in the 42Heilbronn on 11.122.2024 by the awesome team from AnyDesk.
 
-You will get all the necessary information about the 42 Hackersprint in this repository. Simply fork this repository to start.
+The challenge was to build a simple pixel parser that looks for a certain pattern of pixelvalues in a .bmp file and extracts a string message from it.
+The goal was to build the fastest executing algorithm and the incentive was to use the SIMD capabilities of the moderns cpus.
+Eventhough didnt have enough time to read into was SIMD was, and also only used 1 thread, i got it working pretty fast, since we coded in C.
+Right when the time was over, i was able to thimk about optimizing the prgram using a different search pattern and maybe even multithreading. I had several options in my mind but didnt come to implementing them.
+Still it was a lot of fun, and i was happy to come in 4th in the final ranking. 
 
-[subject and test images](https://www.playbook.com/s/tsang-hei-yiu/tmrkRMYXfAk4ptrsvL6xQndj)
-
-Enter the link of your forked repo into the form below
-
-[register form](https://forms.office.com/e/FyJXww3k9r)
-
+⬇️ this part was provided by the original repository.
 # Example of using SIMD
 
 ```c
